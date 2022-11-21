@@ -1,0 +1,12 @@
+.toastui-editor-toolbar{
+    display: none;
+}
+
+.toastui-editor-mode-switch{
+    display: none !important;
+}
+
+.content{
+    padding-left: 15px;
+    margin-right: 15px;
+}
