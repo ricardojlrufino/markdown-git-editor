@@ -27,7 +27,9 @@ main {
   flex-grow: 1;
   padding: 0;
   margin: 1px auto;
-  overflow-y: scroll;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .main__nav {
@@ -79,6 +81,7 @@ main {
 }
 
 .content {
+  flex-grow: 1;
   // padding-right: 1rem;
   // padding-bottom: 3rem;
   // padding-left: 1rem;

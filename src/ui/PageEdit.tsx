@@ -32,7 +32,7 @@ export default function PageEdit({ remaining_path, ...props }) {
             const editor = new toastui.Editor({
                 el: document.querySelector('#viewer'),
                 viewer: false,
-                height: '400px',
+                height: '100%',
                 initialValue:  data,
                 initialEditType: 'wysiwyg',
                 plugins: [uml, [codeSyntaxHighlight], MermaidBlock],
