@@ -7,6 +7,8 @@ const { codeSyntaxHighlight, uml } = toastui.Editor.plugin;
 import {ImageWidget} from "./tui-extends/ImageWidget";
 import {MermaidBlock} from "./tui-extends/MermaidBlock";
 import {ImageRender} from "./tui-extends/ImageRender";
+import {LinkAfterRender} from "./tui-extends/LinkAfterRender";
+
 
 import styles from './_PageView.css?inline';
 import { startWith } from 'rxjs/operators';
@@ -18,18 +20,50 @@ export default function PageView({ remaining_path, ...props }) {
 
     useEffect(() => {
 
+        function onEditorLoad(editor:any){
+
+            debugger;
+
+            LinkAfterRender(editor, remaining_path); // tranform links
+
+            var el = editor.preview.previewContent;
+            var imgs = el.querySelectorAll("img");
+
+            imgs.forEach((myimg:any) => {
+
+                var txt=document.createElement("span");
+                txt.innerHTML="Whatever text you want to write . . .";
+
+                if(myimg.nextSibling){
+                    myimg.parentNode.insertBefore(txt,myimg.nextSibling);
+                  }else{
+                    myimg.parentNode.appendChild(txt);
+                  }
+            });
+
+        }
+
         new ResourceLoader().load(remaining_path).then((data) => {
 
             const viewer = new toastui.Editor.factory({
                 el: document.querySelector('#viewer'),
                 viewer: true,
+                extendedAutolinks: true,
                 height: '400px',
                 initialValue: data,
                 plugins: [uml, [codeSyntaxHighlight], MermaidBlock],
                 // widgetRules: [ImageWidget(remaining_path)], // Nao funciona no viewer
                 customHTMLRenderer: {
-                   image : ImageRender(remaining_path)
+                   image : ImageRender(remaining_path, true)
                 },
+                linkAttribute: {
+                    target: '_blank',
+                    contenteditable: 'false',
+                    rel: 'noopener noreferrer'
+                },
+                events: {
+                    load : onEditorLoad
+                }
               });
 
             // viewer.setMarkdown(await data.text());

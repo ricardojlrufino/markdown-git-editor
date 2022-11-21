@@ -1,6 +1,10 @@
 
 const regexRule = /!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/;
 
+import ResourceLoader from '../../service/ResourceLoader';
+
+const resourceLoader = new ResourceLoader();
+
 import imgPlaceHolder from "/src/assets/image-placeholder.png"
 
 // TODO: Usa service worker
@@ -13,7 +17,7 @@ import imgPlaceHolder from "/src/assets/image-placeholder.png"
 //     }
 //   });
 
-export function ImageWidget(basePath) {
+export function ImageWidget(currentResource, viewMode) {
     return {
         rule: regexRule,
         toDOM(text) {
@@ -23,13 +27,17 @@ export function ImageWidget(basePath) {
             const desc = matched[2];
             const span = document.createElement('span');
 
-            if(fileName.endsWith("drawio.png")){
-                span.innerHTML = `xxDIAGRAMAxx -- <a class="widget-anchor" href="${basePath}">${fileName}</a>`;
-            }else{
-                span.innerHTML = `xxIMAGExx -- <a class="widget-anchor" title="${desc}" href="${basePath}/${fileName}">${fileName}</a>
-<img src="${imgPlaceHolder}"  data-git-src="${fileName}" />
-`;
-            }
+            let path = resourceLoader.resolveImageRelative(fileName, currentResource);
+
+            span.innerHTML = "<img src="+path+" />"
+
+//             if(fileName.endsWith("drawio.png")){
+//                 span.innerHTML = `xxDIAGRAMAxx -- <a class="widget-anchor" href="${basePath}">${fileName}</a>`;
+//             }else{
+//                 span.innerHTML = `xxIMAGExx -- <a class="widget-anchor" title="${desc}" href="${basePath}/${fileName}">${fileName}</a>
+// <img src="${imgPlaceHolder}"  data-git-src="${fileName}" />
+// `;
+//             }
             
             return span;
         }

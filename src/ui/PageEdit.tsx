@@ -28,6 +28,8 @@ export default function PageEdit({ remaining_path, ...props }) {
 
     useEffect(() => {
 
+      console.log("[page-edit] initializing ..");
+
       new ResourceLoader().load(remaining_path).then((data) => {
 
             const editor = new toastui.Editor({
@@ -36,10 +38,11 @@ export default function PageEdit({ remaining_path, ...props }) {
                 height: '100%',
                 initialValue:  data,
                 initialEditType: 'wysiwyg',
+                extendedAutolinks: true,
                 plugins: [uml, [codeSyntaxHighlight], MermaidBlock],
-                // widgetRules: [ImageWidget("https://fake-base-path/")], // 
+                // widgetRules: [ImageWidget(remaining_path, false)], // 
                 customHTMLRenderer: {
-                    image : ImageRender(remaining_path)
+                    image : ImageRender(remaining_path, false)
                 },
                 hooks : {
                   addImageBlobHook : (blob:any, callback:Function) => {

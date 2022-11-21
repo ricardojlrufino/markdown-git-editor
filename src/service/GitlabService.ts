@@ -1,3 +1,4 @@
+import { LinkInfo } from "./ResourceLoader";
 import Settings from "./Settings";
 
 interface ResourceInfo {
@@ -9,7 +10,32 @@ interface ResourceInfo {
   folderName: string; 
 }
 
+
 export default class GitlabService {
+
+  resolveLink(link: string, currentResource: string): LinkInfo {
+
+    let server: string = Settings.get(Settings.GITLAB_HOST);
+    let info: ResourceInfo = this.detectRepositoryInfo(server+currentResource);
+
+    if(link.startsWith(server)){ // full link to internal resource
+      return {
+        internal : true,
+        linkRel : link.substring(server.length)
+      };
+    }else if(link.startsWith("./")){ // same path
+      return {
+        internal : true,
+        linkRel : "/"+info.groupName + "/" + info.repositoryName + "/-/blob/" + info.branch + "/" + info.folderName + "/" + link.substring(2)
+      }
+    }else{
+      return {
+        internal : false,
+        linkRel : link
+      }
+    }
+
+  }
 
 
   resolveImageRelative(imagePath:string, toResource: string): string {
@@ -83,7 +109,7 @@ export default class GitlabService {
     let token: string = Settings.get(Settings.GITLAB_TOKEN);
     let info: ResourceInfo = this.detectRepositoryInfo(server+resource);
 
-    console.log("[gitlab] Repository ingo", info);
+    console.log("[gitlab] Repository info", info);
 
     let pid = encodeURIComponent(info.groupName + "/" + info.repositoryName);
     let filePath = encodeURIComponent(info.fileName);

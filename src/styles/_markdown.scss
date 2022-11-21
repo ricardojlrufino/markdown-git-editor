@@ -12,7 +12,13 @@ pre {
   background-color: #eee;
 }
 
-
+// h1 size 
 .toastui-editor-contents h1 {
   font-size: 2.2rem;
+}
+
+// Markdown font size
+.ProseMirror {
+  font-size: 1.0rem;
+  font-family: 'Courier New', Courier, monospace;
 }

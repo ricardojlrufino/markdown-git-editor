@@ -1,11 +1,23 @@
 import PreProcessor from "../utils/PreProcessor";
 import GitlabService from "./GitlabService";
+import ResourceLoaderFactory from "./ResourceLoaderFactory";
+
+export interface LinkInfo {
+    internal: boolean;
+    linkRel: string;
+}
 
 export default class ResourceLoader {
+
+    resourceProvider : GitlabService;
     
     constructor() {
+
+        this.resourceProvider =  new ResourceLoaderFactory().getResourceProvider();
         
     }
+
+    // TODO: Create new class: ResourceLoaderFactory, to return GitlabService
 
     async uploadImage(resource: string, blob: any): Promise<string>{
 
@@ -14,6 +26,12 @@ export default class ResourceLoader {
         }else{
             return new GitlabService().uploadImage(resource, blob);
         }
+
+    }
+
+    resolveLink(link:string, currentResource: string): LinkInfo {
+      
+        return this.resourceProvider.resolveLink(link, currentResource.substring("/git".length-1));
 
     }
 
