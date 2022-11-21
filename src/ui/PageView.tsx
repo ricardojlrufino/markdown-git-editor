@@ -6,6 +6,7 @@ const toastui = window.toastui;
 const { codeSyntaxHighlight, uml } = toastui.Editor.plugin;
 import {ImageWidget} from "./tui-extends/ImageWidget";
 import {MermaidBlock} from "./tui-extends/MermaidBlock";
+import {ImageRender} from "./tui-extends/ImageRender";
 
 import styles from './_PageView.css?inline';
 import { startWith } from 'rxjs/operators';
@@ -25,7 +26,10 @@ export default function PageView({ remaining_path, ...props }) {
                 height: '400px',
                 initialValue: data,
                 plugins: [uml, [codeSyntaxHighlight], MermaidBlock],
-                widgetRules: [ImageWidget("https://fake-base-path/")],
+                // widgetRules: [ImageWidget(remaining_path)], // Nao funciona no viewer
+                customHTMLRenderer: {
+                   image : ImageRender(remaining_path)
+                },
               });
 
             // viewer.setMarkdown(await data.text());

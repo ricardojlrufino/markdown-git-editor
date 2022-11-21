@@ -30,7 +30,8 @@ export function SideBar() {
       <li><a href="/page/docs/Readme.md">Readme</a></li>
       <li><div class="nav-toggle">Gitlab</div>
          <ul class="submenu">
-            <li><a href="/page/git/vip51/roteiros/publico/-/blob/feature-testes/subpasta/ROTEIRO_SOBRE_FILE.md">Docs 1</a></li>
+            <li><a href="/page/git/vip51/roteiros/publico/-/blob/feature-testes/subpasta/ROTEIRO_SOBRE_FILE.md">Teste Imagens e Diagramas</a></li>
+            <li><a href="/page/git/vip51/roteiros/publico/-/blob/feature-testes/subpasta/PluginTUI.md">Modelo Plugin TUI</a></li>
             <li><a href="#">Coffee</a></li>
             <li><div class="nav-toggle">Tea</div>
             <ul class="submenu">

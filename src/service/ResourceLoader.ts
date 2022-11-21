@@ -16,12 +16,22 @@ export default class ResourceLoader {
         }
 
     }
+
+    resolveImageRelative(imagePath:string, toResource: string): string {
+
+        if(toResource.startsWith("docs/")){
+            return imagePath;
+        }else if(toResource.startsWith("http")){
+            return imagePath;
+        }else{
+            return new GitlabService().resolveImageRelative(imagePath, toResource.substring("/git".length-1));
+        }
+
+    }
    
     async load(resource: string) {
 
         let resultPr:Promise<string>;
-
-        console.log("teste load", resource); 
 
         if(resource.startsWith("docs/")){
             resultPr  = fetch("/"+resource).then(async resp => resp.text());

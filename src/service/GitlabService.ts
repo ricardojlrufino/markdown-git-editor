@@ -5,10 +5,23 @@ interface ResourceInfo {
   groupName: string;
   branch: string;
   repositoryName: string;
-  fileName: string;
+  fileName: string; // ex: folder/subolder/file.ext
+  folderName: string; 
 }
 
 export default class GitlabService {
+
+
+  resolveImageRelative(imagePath:string, toResource: string): string {
+    
+    let server: string = Settings.get(Settings.GITLAB_HOST);
+    let token: string = Settings.get(Settings.GITLAB_TOKEN);
+    let info: ResourceInfo = this.detectRepositoryInfo(server+toResource);
+
+    // Ex.: https://gitlab.com/vip51/roteiros/publico/-/raw/feature-testes/subpasta/icon_android.png
+
+    return server + "/" + info.groupName + "/" + info.repositoryName + "/-/raw/" + info.branch + "/" + info.folderName + "/" + imagePath;
+  }
   
   async uploadImage(resource: string, blob: any): Promise<string> {
 
@@ -112,6 +125,8 @@ export default class GitlabService {
     var branch = tmp.substring(0, tmp.indexOf("/"));
     var file = tmp.substring(branch.length + 1);
 
+    var folder = file.substring(0, file.lastIndexOf("/"));
+
     // Frist path (http://host/group/repository)
     tmp = url.substring(0, url.indexOf(SEP));
 
@@ -127,6 +142,7 @@ export default class GitlabService {
       branch: branch,
       repositoryName: repostory,
       fileName: file,
+      folderName: folder,
     };
 
     return info;

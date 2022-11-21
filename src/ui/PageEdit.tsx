@@ -6,6 +6,7 @@ const toastui = window.toastui;
 const { codeSyntaxHighlight , uml} = toastui.Editor.plugin;
 import {ImageWidget} from "./tui-extends/ImageWidget";
 import {MermaidBlock} from "./tui-extends/MermaidBlock";
+import {ImageRender} from "./tui-extends/ImageRender";
 
 
 export default function PageEdit({ remaining_path, ...props }) {
@@ -26,7 +27,7 @@ export default function PageEdit({ remaining_path, ...props }) {
     }
 
     useEffect(() => {
-      
+
       new ResourceLoader().load(remaining_path).then((data) => {
 
             const editor = new toastui.Editor({
@@ -36,7 +37,10 @@ export default function PageEdit({ remaining_path, ...props }) {
                 initialValue:  data,
                 initialEditType: 'wysiwyg',
                 plugins: [uml, [codeSyntaxHighlight], MermaidBlock],
-                widgetRules: [ImageWidget("https://fake-base-path/")],
+                // widgetRules: [ImageWidget("https://fake-base-path/")], // 
+                customHTMLRenderer: {
+                    image : ImageRender(remaining_path)
+                },
                 hooks : {
                   addImageBlobHook : (blob:any, callback:Function) => {
                     uploadImage(blob, callback);
@@ -53,6 +57,7 @@ export default function PageEdit({ remaining_path, ...props }) {
         <>
             <ul class="breadcrumb">
                 <li class="">Edit: {remaining_path}</li>
+                <li> <a href={"/page/"+ remaining_path}> View </a></li>
             </ul>
 
             <div class="content">
