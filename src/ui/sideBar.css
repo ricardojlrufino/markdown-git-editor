@@ -1,110 +1,57 @@
+/* Remove default bullets */
+#sidebar , .submenu {
+  list-style-type: none;
+}
 
-ul.menu {
-  padding: 0;
+/* Remove margins and padding from the parent ul */
+#sidebar {
   margin: 0;
-  list-style: none;
-  width: 100%;
-  font-family: "Century Gothic";
-}
-ul.menu .ac-list {
-  font-size: 14px;
-  line-height: 0.2rem;
-  /* border-bottom: 1px solid #dce2e9; */
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  height: 37px;
-  vertical-align: sub;
-  clear: both;
-  border: 0;
-}
-ul.menu .ac-list:after {
-  content: "";
-  font-family: FontAwesome;
-  position: absolute;
-  right: 17px;
-  top: 17px;
-  padding: 0px 5px;
-}
-ul.menu .ac-list:before {
-  content: "";
-  font-family: FontAwesome;
-  position: absolute;
-  left: 10px;
-  top: 17px;
-}
-ul.menu .ac-list a {
-  text-decoration: none;
-  padding: 17px 0px 17px 30px;
-  display: block;
-  height: 100%;
-  box-sizing: border-box;
-  color: #222;
-  outline-style: none;
-}
-ul.menu .ac-list a:hover {
-  transition: 300ms all;
-  background-color: #eeeeee;
-}
-ul.menu .ac-list .items {
-  height: 0px;
-  overflow: hidden;
+  padding: 5px;
   
 }
-ul.menu .ac-list .items a {
-  padding: 17px;
-  outline-style: none;
-}
-ul.menu .ac-list .items a:hover {
-  transition: 300ms all;
-}
-ul.menu .ac-list:last-child {
-  border-bottom: none;
-}
-ul.menu .active:after {
-  content: "";
-  font-family: FontAwesome;
-  position: absolute;
-  right: 17px;
-  top: 17px;
-  padding: 0px 5px;
-}
-ul.menu .active:before {
-  content: "";
-  font-family: FontAwesome;
-  position: absolute;
-}
-ul.menu .active > .items {
-  display: block;
-  padding: 0px;
-  height: auto;
-  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-  transition: display 200ms;
-  clear: both;
-  float: left;
-  width: 100%;
-}
-ul.menu .active > .items li {
-  padding: 0px;
-  /* border-bottom: 1px solid #324252; */
-  list-style: none;
-  font-size: 14px;
-  line-height: 0.3rem;
-}
-ul.menu .active > .items li:last-child {
-  border-color: transparent;
-  padding-bottom: 0px;
-}
-ul.menu .active > .items .active > .items {
-  background-color: #2f4b67;
-}
-ul.menu .active > a {
-  font-weight: bold;
-}
-ul.menu .active .ac-list {
-  background: #ececec;
-}
-ul.menu .active .ac-list a {
-  padding: 17px 0px 17px 45px;
+
+#sidebar a, #sidebar li{
+  color: #213547;
+  font-size: 16px;
+  line-height: 1.5em;
 }
 
+#sidebar a:hover{
+  text-decoration: underline;
+}
+
+
+/* Style the nav-toggle/arrow */
+.nav-toggle {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+  font-weight: bold;
+}
+
+
+/* Create the nav-toggle/arrow with a unicode, and style it */
+.nav-toggle::after {
+  content: "\25B6";
+  color: #b6b1b1;
+  display: inline-block;
+  margin-right: 6px;
+  float: inline-end;
+  font-size: 15px;
+}
+
+/* Rotate the nav-toggle/arrow icon when clicked on (using JavaScript) */
+.caret-down::after {
+  transform: rotate(90deg);
+}
+
+/* Hide the submenu list */
+.submenu {
+  display: none;
+  padding-inline-start: 17px;
+}
+
+
+/* Show the submenu list when the user clicks on the nav-toggle/arrow (with JavaScript) */
+.submenu.active {
+  display: block;
+}

@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header class="header">
       <div class="header__brand">
-         <span class="header__name">Git <b>DocBook</b></span>
+         <span class="header__name">Git <b>TechDocs</b></span>
       </div>
       <nav class="nav">
          

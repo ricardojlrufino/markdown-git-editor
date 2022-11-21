@@ -7,82 +7,48 @@ export function SideBar() {
 
 
   useEffect(() => {
+
+   var toggler = document.getElementsByClassName("nav-toggle");
+   var i;
+
+   for (i = 0; i < toggler.length; i++) {
+      toggler[i].addEventListener("click", function() {
+         this.parentElement.querySelector(".submenu").classList.toggle("active");
+         this.classList.toggle("caret-down");
+      });
+   }
     
-   const list = document.querySelectorAll('.ac-list');
-
-   function accordion(e) {
-      e.stopPropagation();
-      e.preventDefault();
-
-      console.log(e.target.tagName, this.tagName);
-
-      if (this.classList.contains('active')) {
-         this.classList.remove('active');
-      } else if (this.parentElement.parentElement.classList.contains('active')) {
-         this.classList.add('active');
-      }else {
-
-         // for (let i = 0; i < list.length; i++) {
-         //    list[i].classList.remove('active');
-         // }
-
-         this.classList.add('active');
-      }
-   }
-
-   // Add handler
-   for(let i = 0; i < list.length; i++ ){
-      list[i].addEventListener('click', accordion);
-   }
-
-
+   
   }, [])
   
 
   return (
     <>
    
-   <ul class="menu">
-   <li class="ac-list"><a href="#">List 1 </a> 
-      <ul class="items">
-         <li><a href="/page/docs/Popcorn.md"> Item 1-1</a></li>
-         <li><a href="/page/docs/Readme.md"> Item 1-2</a></li>
-         <li><a href="#"> Item 1-3</a></li>
-      </ul>
-   </li>
-   <li class="ac-list"><a href="#">List 2</a> 
-      <ul class="items">
-         <li> <a href="#" > Item 2-1 </a></li>
-         <li> <a href="#" > Item 2-2 </a></li>
-         <li> <a href="#" > Item 2-3 </a></li>
-      </ul>
-   </li>
-   <li class="ac-list"><a href="#">List 3</a> 
-      <ul class="items">
-         <li> <a href="#" > Item 3-1 </a></li>
-         <li> <a href="#" > Item 3-2 </a></li>
-         <li> <a href="#" > Item 3-2 </a></li>
-      </ul>
-   </li>
-   <li class="ac-list"><a href="#">List 4 (l:0)</a> 
-      <ul class="items">
-         <li> <a href="#" > Item 4-1 </a></li>
-         <li> <a href="#" > Item 4-2 </a></li>
-         <li class="ac-list"><a href="#">List 4-1 (l:1)</a> 
-            <ul  class="items">
-               <li> <a href="#" > Item 4-1-1</a></li>
-               <li> <a href="#" > Item 4-1-2</a></li>
-               <li class="ac-list"><a href="#">List 4-1-2 (l:2)</a> 
-                  <ul  class="items">
-                     <li> <a href="#" > Item 4-2-1</a></li>
-                     <li> <a href="#" > Item 4-2-2</a></li>
+   <ul id="sidebar">
+      <li><a href="/page/docs/Popcorn.md">Popcorn</a></li>
+      <li><a href="/page/docs/Readme.md">Readme</a></li>
+      <li><div class="nav-toggle">Gitlab</div>
+         <ul class="submenu">
+            <li><a href="/page/git/vip51/roteiros/publico/-/blob/feature-testes/subpasta/ROTEIRO_SOBRE_FILE.md">Docs 1</a></li>
+            <li><a href="#">Coffee</a></li>
+            <li><div class="nav-toggle">Tea</div>
+            <ul class="submenu">
+               <li>Black Tea</li>
+               <li><div class="nav-toggle">Green Tea</div>
+                  <ul class="submenu">
+                     <li><a href="#">Sencha</a></li>
+                     <li>Gyokuro</li>
+                     <li>Matcha</li>
+                     <li>Pi Lo Chun</li>
                   </ul>
                </li>
+               <li>White Tea</li>
             </ul>
-         </li>
-      </ul>
-   </li>
-</ul>
+            </li>
+         </ul>
+      </li>
+   </ul>
 
 
 
