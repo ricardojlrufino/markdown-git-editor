@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { Link } from 'preact-router/match';
 
 import "./sideBar.css" 
-
+ 
 export default function SideBar() {
 
   // Active menu events 

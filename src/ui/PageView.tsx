@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
 import { useEffect, useRef } from 'preact/hooks';
-import { style } from '@angular/animations';
 const toastui = window.toastui;
 const { codeSyntaxHighlight, uml } = toastui.Editor.plugin;
 import {ImageWidget} from "./tui-extends/ImageWidget";
@@ -9,12 +8,14 @@ import {MermaidBlock} from "./tui-extends/MermaidBlock";
 import {ImageRender} from "./tui-extends/ImageRender";
 import {LinkAfterRender} from "./tui-extends/LinkAfterRender";
 
-
 import styles from './_PageView.css?inline';
-import { startWith } from 'rxjs/operators';
 import ResourceLoader from '../service/ResourceLoader';
+import { RoutableProps, RouterProps } from 'preact-router';
 
-export default function PageView({ remaining_path, ...props }) {
+
+export default function PageView({ url, ...props } : RouterProps) {
+
+    const remaining_path: string = url.substring("/page/".length)!;
 
     const divRef = useRef<HTMLIFrameElement>(null);
 
@@ -69,7 +70,7 @@ export default function PageView({ remaining_path, ...props }) {
             //document.querySelector(".toastui-editor-contents").contenteditable = false;;
 
             // Disable All editing features
-            document.querySelectorAll("[contenteditable=true]").forEach(el => el.setAttribute("contentEditable", false));
+            // document.querySelectorAll("[contenteditable=true]").forEach(el => el.setAttribute("contentEditable", "false"));
 
             // var html = viewer.getHTML();
 

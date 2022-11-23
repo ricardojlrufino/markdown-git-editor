@@ -1,8 +1,9 @@
 import React from 'preact'
-import { route } from 'preact-router';
+import { route, RouterProps } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 
-export default function Home() {
+
+export default function Home({ ...props } : RouterProps) {
 
    useEffect(() => {
       route("/page/docs/Popcorn.md", true);

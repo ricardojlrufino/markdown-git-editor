@@ -12,8 +12,11 @@ import {ImageRender} from "./tui-extends/ImageRender";
 
 import Popup from "../utils/Popup";
 import Alerts from "../utils/Alerts";
+import { RouterProps } from 'preact-router';
 
-export default function PageEdit({ remaining_path, ...props }) {
+export default function PageEdit({ url, ...props } : RouterProps) {
+
+    const remaining_path: string = url.substring("/edit/".length) !;
 
     const divRef = useRef<HTMLElement>(null);
 
