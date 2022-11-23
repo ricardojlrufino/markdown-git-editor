@@ -5,7 +5,7 @@ import { createHashHistory } from 'history';
 // import './app.static.css'
 import './app.scss'
 
-import { SideBar } from './ui/SideBar'
+import SideBar from './ui/SideBar'
 import Header from './ui/Header';
 import Router from 'preact-router'
 import Home from './pages/Home'
@@ -23,7 +23,6 @@ export function App() {
   return (
     <>
 
-<div id="app">
    <Header />
    <main>
       <nav class="main__nav">
@@ -35,6 +34,7 @@ export function App() {
          </div>
       </nav>
       <div class="container">
+
          <Router history={customHistory}>
             <Home path="/" />
             <PageView path="/page/:remaining_path*"  />
@@ -42,10 +42,8 @@ export function App() {
             <Error type="404" default />
          </Router>
 
-         
       </div>
    </main>
-</div>
 
     </>
   )

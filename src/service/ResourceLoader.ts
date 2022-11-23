@@ -31,7 +31,7 @@ export default class ResourceLoader {
 
     resolveLink(link:string, currentResource: string): LinkInfo {
       
-        return this.resourceProvider.resolveLink(link, currentResource.substring("/git".length-1));
+        return this.resourceProvider.resolveLink(link, currentResource);
 
     }
 
@@ -42,7 +42,7 @@ export default class ResourceLoader {
         }else if(toResource.startsWith("http")){
             return imagePath;
         }else{
-            return new GitlabService().resolveImageRelative(imagePath, toResource.substring("/git".length-1));
+            return new GitlabService().resolveImageRelative(imagePath, toResource);
         }
 
     }
@@ -54,10 +54,16 @@ export default class ResourceLoader {
         if(resource.startsWith("docs/")){
             resultPr  = fetch("/"+resource).then(async resp => resp.text());
         }else{
-            resultPr = new GitlabService().load(resource.substring("/git".length-1));
+            resultPr = new GitlabService().load(resource);
         }
 
         return  resultPr.then((text:string) => new PreProcessor().process(text));
+
+    }
+
+    async save(resource: string, content: string, message:string,  newbranch: string | null) : Promise<string> {
+
+        return  this.resourceProvider.save(resource, content, message, newbranch);
 
     }
 

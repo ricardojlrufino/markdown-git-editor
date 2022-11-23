@@ -28,7 +28,7 @@ export function LinkAfterRender(editor, currentResource){
 
                 e.preventDefault();
                 
-                window.location = "#/page/git" + linkInfo.linkRel;
+                window.location = "#/page" + linkInfo.linkRel;
             }
             
         }

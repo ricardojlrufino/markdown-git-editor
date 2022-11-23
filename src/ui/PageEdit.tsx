@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import ResourceLoader from '../service/ResourceLoader';
 const toastui = window.toastui;
 const { codeSyntaxHighlight , uml} = toastui.Editor.plugin;
@@ -8,12 +8,125 @@ import {ImageWidget} from "./tui-extends/ImageWidget";
 import {MermaidBlock} from "./tui-extends/MermaidBlock";
 import {ImageRender} from "./tui-extends/ImageRender";
 
+// import Popup  from 'popup-es';
+
+import Popup from "../utils/Popup";
+import Alerts from "../utils/Alerts";
 
 export default function PageEdit({ remaining_path, ...props }) {
 
-    const divRef = useRef<HTMLIFrameElement>(null);
+    const divRef = useRef<HTMLElement>(null);
 
-    const resource:string = remaining_path;
+    const popupSaveRef = useRef<any>(null);
+
+    const editorRef = useRef<any>(null);
+
+    const [resource, setResource] = useState(remaining_path) ;
+
+    const testPopup = async (e:any) =>{
+
+      e.preventDefault();
+
+      popupSaveRef.current.show();
+
+    }
+
+
+    const testModal = async (e:any) =>{
+
+      e.preventDefault();
+
+      let value = await Alerts.confirm("Deseja continuar editando ?");
+
+      alert(value);
+
+    }
+
+    const viewPage = (url:string) =>{
+
+      // TODO: check changes.
+
+      window.location.href = "#/page/"+ url;
+
+    }
+
+    const editPage = (url:string) =>{
+
+      // TODO: check changes.
+      
+      setResource(url);
+      window.location.href = "#/edit/"+ url;
+
+
+    }
+
+    const saveContent = async () =>{
+
+      if(!editorRef.current) return;
+      
+      let content = editorRef.current.getMarkdown()!;
+      
+      let message = await Alerts.prompt("Mensagem de Commit:", "update docs")!;
+
+      if(!message){
+        return;
+      }
+
+      let branch =  "patch-docs-" + new Date().getTime();
+
+      console.log("Saving resource: " + resource);
+
+      // ask to use new branch
+      if(resource.indexOf("patch-docs") == -1){
+
+        branch = await Alerts.prompt("O seguinte branch sera usado para suas modificações:", branch)!;
+
+        debugger;
+
+        if(!branch){
+          return;
+        }
+
+      }else{
+        branch = null!; // force default
+      }
+
+     
+      console.log("Saving on branch: " + branch);
+
+      new ResourceLoader().save(resource, content, message, branch).then(async resp =>{
+
+          // Flow for new edits (on master)
+          if(resource.indexOf("patch-docs") == -1){
+             
+            let edit = await Alerts.confirm("Salvo ! Deseja continuar editando ?");
+
+            // mudar para novo arquivo
+            if(edit){
+
+              editPage(resp);
+                
+            }else {
+
+              viewPage(resp);
+
+            }
+
+          }else{
+
+            let edit = await Alerts.confirm("Salvo ! Deseja continuar editando ?");
+
+            if(!edit){
+
+              viewPage(resp);
+
+            }
+
+          }
+
+      });
+
+    }
 
     const uploadImage = (blob:any, editor_callback:Function) =>{
 
@@ -29,6 +142,8 @@ export default function PageEdit({ remaining_path, ...props }) {
     useEffect(() => {
 
       console.log("[page-edit] initializing ..");
+
+      new Popup(); // active popups
 
       new ResourceLoader().load(remaining_path).then((data) => {
 
@@ -49,7 +164,9 @@ export default function PageEdit({ remaining_path, ...props }) {
                     uploadImage(blob, callback);
                   }
                 }
-              });
+            });
+
+            editorRef.current = editor;
 
         });  
 
@@ -60,12 +177,35 @@ export default function PageEdit({ remaining_path, ...props }) {
         <>
             <ul class="breadcrumb">
                 <li class="">Edit: {remaining_path}</li>
-                <li> <a href={"/page/"+ remaining_path}> View </a></li>
+                <li> 
+                  <a class="btn" onClick={()=> viewPage(remaining_path) }> View  </a>
+                  <a class="btn" onClick={()=> saveContent()}> Save  </a>
+                  
+             
+                </li>
+
+                <li> <a href="#" onClick={(e)=> testPopup(e)} >Popup</a> </li>
+                <li> <a href="#" onClick={(e)=> testModal(e)} >testModal</a>  </li>
+                 
             </ul>
 
             <div class="content">
                 <div id="viewer">
                 </div>
+
+                <dialog ref={popupSaveRef} data-popup="fade" class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                        <a href="#" class="btn popup-close-button" data-popup-toggle="close">x</a>
+                          Dialog
+                       </div>
+                      <div class="modal-body"> Suas alterações foram salvas. Gostaria de continuar editando   </div>
+                      <div class="modal-footer"> 
+                        <a href="#" class="btn" data-popup-toggle="close"> OK </a>  
+                      </div>
+                  </div>	
+                </dialog> 
+                 
             </div>
            
         </>

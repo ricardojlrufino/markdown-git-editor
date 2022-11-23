@@ -15,6 +15,8 @@ export default class GitlabService {
 
   resolveLink(link: string, currentResource: string): LinkInfo {
 
+    if(!currentResource.startsWith("/")) currentResource = "/" + currentResource;
+
     let server: string = Settings.get(Settings.GITLAB_HOST);
     let info: ResourceInfo = this.detectRepositoryInfo(server+currentResource);
 
@@ -40,6 +42,8 @@ export default class GitlabService {
 
   resolveImageRelative(imagePath:string, toResource: string): string {
     
+    if(!toResource.startsWith("/")) toResource = "/" + toResource;
+
     let server: string = Settings.get(Settings.GITLAB_HOST);
     let token: string = Settings.get(Settings.GITLAB_TOKEN);
     let info: ResourceInfo = this.detectRepositoryInfo(server+toResource);
@@ -50,6 +54,8 @@ export default class GitlabService {
   }
   
   async uploadImage(resource: string, blob: any): Promise<string> {
+
+    if(!resource.startsWith("/")) resource = "/" + resource;
 
     let server: string = Settings.get(Settings.GITLAB_HOST);
     let token: string = Settings.get(Settings.GITLAB_TOKEN);
@@ -103,6 +109,8 @@ export default class GitlabService {
 
   async load(resource: string) {
 
+    if(!resource.startsWith("/")) resource = "/" + resource;
+
     console.log("[gitlab] load ", resource);
 
     let server: string = Settings.get(Settings.GITLAB_HOST);
@@ -134,6 +142,78 @@ export default class GitlabService {
         }
 
     });
+  }
+
+
+  async save(resource: string, content: string, message:string,  newbranch: string | null) : Promise<string>{
+
+    if(!resource.startsWith("/")) resource = "/" + resource;
+
+    let server: string = Settings.get(Settings.GITLAB_HOST);
+    let token: string = Settings.get(Settings.GITLAB_TOKEN);
+    let info: ResourceInfo = this.detectRepositoryInfo(server+resource);
+
+    let pid = encodeURIComponent(info.groupName + "/" + info.repositoryName);
+    let filePath = encodeURIComponent(info.fileName);
+
+    // create branche ?
+    if(newbranch && newbranch != info.branch){
+       await this.newBranch(newbranch, resource);
+    }
+
+    let branch = (newbranch ? newbranch :  info.branch);
+
+    return fetch(server + `/api/v4/projects/${pid}/repository/files/${filePath}`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+        "PRIVATE-TOKEN": token,
+      },
+      body: JSON.stringify({
+        "branch": branch,
+        "commit_message": message,
+        "content": content
+      })
+    }).then(async resp => {
+
+      if(resp.ok){
+        return  info.groupName + "/" + info.repositoryName + "/-/blob/" + branch + "/" + info.fileName;
+      }else{
+        throw new Error(await resp.text());
+      }
+      
+    });
+  }
+
+  async newBranch(newbranch: string, resourceRef:string) {
+
+    if(!resourceRef.startsWith("/")) resourceRef = "/" + resourceRef;
+
+    console.log("Creating branche...");
+
+    let server: string = Settings.get(Settings.GITLAB_HOST);
+    let token: string = Settings.get(Settings.GITLAB_TOKEN);
+    let info: ResourceInfo = this.detectRepositoryInfo(server+resourceRef);
+
+    let pid = encodeURIComponent(info.groupName + "/" + info.repositoryName);
+    let branchRef = info.branch;
+
+    return fetch(server + `/api/v4/projects/${pid}/repository/branches`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "PRIVATE-TOKEN": token,
+      },
+      body: JSON.stringify({
+        "branch": newbranch,
+        "ref": branchRef
+      })
+    }).then(resp => {
+
+      return resp.ok;
+
+    });
+
   }
 
   detectRepositoryInfo(url: string): ResourceInfo {
