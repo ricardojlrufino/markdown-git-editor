@@ -8,12 +8,20 @@ export default defineConfig({
   server: {
     port: 5174
   },
+
   build: {
+    lib: {
+      // Could also be a dictionary or array of multiple entry points
+      entry: resolve(__dirname, 'src/main.tsx'),
+      name: 'MyLib',
+      // the proper extensions will be added
+      fileName: 'my-lib'
+    },
     rollupOptions : {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        nested: resolve(__dirname, 'siteConf/index.html')
-      },
+      // input: {
+      //   main: resolve(__dirname, 'index.html'),
+      //   nested: resolve(__dirname, 'siteConf/index.html')
+      // },
       output : {
         dir: "dist"
       }

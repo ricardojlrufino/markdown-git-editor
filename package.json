@@ -12,7 +12,8 @@
     "history": "^5.1.0",
     "oauth4webapi": "^2.0.1",
     "preact": "^10.11.3",
-    "preact-router": "^4.1.0"
+    "preact-router": "^4.1.0",
+    "refresh-fetch": "^0.8.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.4.0",

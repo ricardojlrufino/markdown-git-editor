@@ -1,5 +1,9 @@
 import { LinkInfo } from "./ResourceLoader";
 import Settings from "./Settings";
+import { configureRefreshFetch, fetchJSON } from 'refresh-fetch'
+import * as _ from 'lodash';    
+
+import Auth from "./Auth";
 
 interface ResourceInfo {
   host: string;
@@ -9,6 +13,44 @@ interface ResourceInfo {
   fileName: string; // ex: folder/subolder/file.ext
   folderName: string; 
 }
+
+const fetchInterceptor = (url:string, options = {}) => {
+  let token: string = Settings.get(Settings.GITLAB_TOKEN);
+
+  let optionsWithToken = options
+  if (token != null) {
+    optionsWithToken = _.merge({}, options, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }
+
+  return fetchJSON(url, optionsWithToken)
+}
+
+const apiFetch = configureRefreshFetch({
+
+  // Pass fetch function you want to wrap, it should already be adding
+  // token to the request
+  fetch : fetchInterceptor,
+
+  // shouldRefreshToken is called when API fetch fails and it should decide
+  // whether the response error means we need to refresh token
+  shouldRefreshToken: (error:any) => {
+    debugger;
+    return error.response.status === 401 && error.body.error === "invalid_token"
+  },
+
+  // refreshToken should call the refresh token API, save the refreshed
+  // token and return promise -- resolving it when everything goes fine,
+  // rejecting it when refreshing fails for some reason
+  refreshToken: async () => {
+    debugger;
+    return Auth.refreshToken();
+  }
+})
+
 
 
 export default class GitlabService {
@@ -111,6 +153,14 @@ export default class GitlabService {
 
   }
 
+  async refrestToken(afterRefreshCallback:Function) {
+
+    console.log("refrestToken ");
+
+    afterRefreshCallback();
+
+  }
+
   async load(resource: string) {
 
     if(!resource.startsWith("/")) resource = "/" + resource;
@@ -132,18 +182,15 @@ export default class GitlabService {
       "content-type": "application/json",
     };
 
-    return fetch(server +`/api/v4/projects/${pid}/repository/files/${filePath}/raw?ref=${branch}`,
+    return apiFetch(server +`/api/v4/projects/${pid}/repository/files/${filePath}/raw?ref=${branch}`,
       {
         method: "GET",
         headers,
       }
     ).then(async (resp:Response) => {
 
-        if(resp.ok){
-            return await resp.text();
-        }else{
-            throw Error(await resp.text());
-        }
+      return resp.body;
+
 
     });
   }
@@ -167,7 +214,7 @@ export default class GitlabService {
 
     let branch = (newbranch ? newbranch :  info.branch);
 
-    return fetch(server + `/api/v4/projects/${pid}/repository/files/${filePath}`, {
+    return apiFetch(server + `/api/v4/projects/${pid}/repository/files/${filePath}`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
@@ -178,14 +225,8 @@ export default class GitlabService {
         "commit_message": message,
         "content": content
       })
-    }).then(async resp => {
-
-      if(resp.ok){
-        return  info.groupName + "/" + info.repositoryName + "/-/blob/" + branch + "/" + info.fileName;
-      }else{
-        throw new Error(await resp.text());
-      }
-      
+    }).then((resp:any) => {
+        return info.groupName + "/" + info.repositoryName + "/-/blob/" + branch + "/" + info.fileName;
     });
   }
 
@@ -214,7 +255,7 @@ export default class GitlabService {
       })
     }).then(resp => {
 
-      return resp.ok;
+      return true;
 
     });
 

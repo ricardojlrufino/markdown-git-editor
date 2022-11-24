@@ -6,15 +6,39 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>HTML 5 Boilerplate</title>
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/dist/style.css">
 
   </head>
   <body>
+
+    <div id="app"></div>
+
+
 	  <script type="module">
         import SiteConfig from './docsite.conf.js';
     </script>
 
     OK test page
+
+    <script>
+
+      window.process = {
+        env: {
+         NODE_ENV: 'development'
+        }
+      }
+      </script>
+  
+
+    <script type="module" src="/dist/my-lib.js"></script>
+
+        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.2.2/mermaid.min.js"></script> -->
+    <!-- Editor's Plugin -->
+    <script src="https://uicdn.toast.com/editor-plugin-uml/latest/toastui-editor-plugin-uml.min.js"></script>
+    
+    
 
   </body>
 </html>

@@ -1,5 +1,4 @@
-
-var REDIRECT_URI = window.location.origin;
+var REDIRECT_URI = window.location.origin +  window.location.pathname;
 
 import * as oauth from 'oauth4webapi'
 import Settings from './Settings';
@@ -154,5 +153,54 @@ export default class Auth {
         window.location.href = authorizationUrl.href;
       }
 
+    }
+
+    static async refreshToken(){
+
+      const issuer = new URL(SiteConfig["auth"]["baseUrl"]);
+
+      const storedTokens:any = Settings.get(Settings.AUTH_TOKENS_RESP);
+      const refreshToken = storedTokens["refresh_token"];
+
+      if(!refreshToken){
+        console.warn("Refresh token not found !!");
+        Settings.set(Settings.AUTH_LOGGED, false);
+        await this.login();
+        return;
+      }
+
+      debugger;
+
+      const as = await oauth
+        .discoveryRequest(issuer)
+        .then((response:any) => oauth.processDiscoveryResponse(issuer, response))
+
+      const client: oauth.Client = {
+        client_id: SiteConfig["auth"]["clientID"],
+        client_secret: SiteConfig["auth"]["secret"],
+        token_endpoint_auth_method: 'client_secret_basic',
+      }
+
+      return oauth.refreshTokenGrantRequest(
+        as,
+        client,
+        refreshToken,
+      ).then(async resp => {
+
+        if(resp.ok){
+
+          let tokens = await resp.json();
+      
+          Settings.set(Settings.AUTH_LOGGED, "true");
+          Settings.set(Settings.AUTH_TOKENS_RESP, tokens);
+          Settings.set(Settings.GITLAB_TOKEN, tokens["access_token"]);
+
+        }else{
+          console.error(resp);
+          throw new Error("Falied to refresh token");
+        }
+
+      })
+   
     }
 }
