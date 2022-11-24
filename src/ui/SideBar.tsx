@@ -2,8 +2,53 @@ import { useState, useEffect } from 'preact/hooks';
 import { Link } from 'preact-router/match';
 
 import "./sideBar.css" 
+import Settings from '../service/Settings';
  
 export default function SideBar() {
+
+  const [menuTree, setMenu] = useState([]);
+
+  function loadSettings(){
+
+   let settings = Settings.getSiteSettings();
+
+   fetchMenu(settings["sideBar"]["resource"]);
+  }
+
+  function fetchMenu(menuRes:string){
+
+      // Restore from cache e keep loading....
+      let rMenuCache = Settings.getOpt(Settings.EDITOR_MENU_CACHE, null);
+
+      if(rMenuCache){
+         setMenu(JSON.parse(rMenuCache));
+      }
+
+      console.log("Loading menu", menuRes);
+
+      fetch(menuRes).then(async resp => {
+
+         var rMenu = await resp.text();
+
+         localStorage.setItem(Settings.EDITOR_MENU_CACHE, rMenu);
+
+         if(rMenuCache && rMenuCache.length == rMenu.length){
+            console.log("Using menu from cache ...");
+            return;
+         }
+
+         setMenu(JSON.parse(rMenu));
+
+      });
+
+  }
+
+  // Active menu events 
+  useEffect(() => {
+
+   loadSettings();
+
+  }, []);
 
   // Active menu events 
   useEffect(() => {
@@ -17,36 +62,30 @@ export default function SideBar() {
          this.classList.toggle("caret-down");
       });
    }
-    
    
-  }, [])
-  
+  }, [menuTree])
+
+  const traverseNode = (node:any) => {
+   return (
+      <li key={node.title}>
+       {node.subItems
+         ? 
+            <>
+               <div class="nav-toggle">{node.title}</div>
+               <ul class="submenu">
+                  {node.subItems.map((childNode:any) => traverseNode(childNode))}
+               </ul>
+            </>
+         : (
+            <a href={node.href}>{node.title}</a>
+         )}
+      </li>
+      );
+   };
 
   return (
    <ul id="sidebar">
-      <li><a href="/page/docs/Popcorn.md">Popcorn</a></li>
-      <li><a href="/page/docs/Readme.md">Readme</a></li>
-      <li><div class="nav-toggle">Gitlab</div>
-         <ul class="submenu">
-            <li><a href="/page/vip51/roteiros/publico/-/blob/feature-testes/subpasta/ROTEIRO_SOBRE_FILE.md">Teste Imagens e Diagramas</a></li>
-            <li><a href="/page/vip51/roteiros/publico/-/blob/feature-testes/subpasta/PluginTUI.md">Modelo Plugin TUI</a></li>
-            <li><a href="#">Coffee</a></li>
-            <li><div class="nav-toggle">Tea</div>
-            <ul class="submenu">
-               <li>Black Tea</li>
-               <li><div class="nav-toggle">Green Tea</div>
-                  <ul class="submenu">
-                     <li><a href="#">Sencha</a></li>
-                     <li>Gyokuro</li>
-                     <li>Matcha</li>
-                     <li>Pi Lo Chun</li>
-                  </ul>
-               </li>
-               <li>White Tea</li>
-            </ul>
-            </li>
-         </ul>
-      </li>
+      {menuTree.map((node) => traverseNode(node))}
    </ul>
   )
 }
