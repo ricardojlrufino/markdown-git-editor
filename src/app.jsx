@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import { createBrowserHistory, createHashHistory } from 'history';
 // import './app.static.css'
@@ -11,8 +11,16 @@ import Home from './pages/Home'
 import { Error } from './pages/Error'
 import PageView from './ui/PageView'
 import PageEdit from './ui/PageEdit'
+import Auth from './service/Auth';
+
 export function App() {
 
+   useEffect(() => {
+
+      Auth.handleAuth();
+
+   }, [])
+   
    return (
       <>
          <Header />

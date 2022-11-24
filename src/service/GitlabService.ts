@@ -82,8 +82,12 @@ export default class GitlabService {
     let data = new FormData();
     data.append('file',blob);
 
+    // const headers: HeadersInit = {
+    //   "private-token": token,
+    // };
+
     const headers: HeadersInit = {
-      "private-token": token,
+      "Authorization": "Bearer " + token,
     };
 
     return fetch(server + `/api/v4/projects/${pid}/uploads`, {
@@ -124,8 +128,8 @@ export default class GitlabService {
     let branch = info.branch;
  
     const headers: HeadersInit = {
+      "Authorization": "Bearer " + token,
       "content-type": "application/json",
-      "private-token": token,
     };
 
     return fetch(server +`/api/v4/projects/${pid}/repository/files/${filePath}/raw?ref=${branch}`,
@@ -167,7 +171,7 @@ export default class GitlabService {
       method: "PUT",
       headers: {
         "content-type": "application/json",
-        "PRIVATE-TOKEN": token,
+        "Authorization": "Bearer " + token,
       },
       body: JSON.stringify({
         "branch": branch,
@@ -202,7 +206,7 @@ export default class GitlabService {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "PRIVATE-TOKEN": token,
+        "Authorization": "Bearer " + token,
       },
       body: JSON.stringify({
         "branch": newbranch,

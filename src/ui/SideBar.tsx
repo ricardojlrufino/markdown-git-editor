@@ -21,7 +21,7 @@ export default function SideBar() {
       let rMenuCache = Settings.getOpt(Settings.EDITOR_MENU_CACHE, null);
 
       if(rMenuCache){
-         setMenu(JSON.parse(rMenuCache));
+         setMenu(rMenuCache!);
       }
 
       console.log("Loading menu", menuRes);
@@ -32,10 +32,10 @@ export default function SideBar() {
 
          localStorage.setItem(Settings.EDITOR_MENU_CACHE, rMenu);
 
-         if(rMenuCache && rMenuCache.length == rMenu.length){
-            console.log("Using menu from cache ...");
-            return;
-         }
+         // if(rMenuCache && rMenuCache.json.length == rMenu.length){
+         //    console.log("Using menu from cache ...");
+         //    return;
+         // }
 
          setMenu(JSON.parse(rMenu));
 
@@ -53,14 +53,17 @@ export default function SideBar() {
   // Active menu events 
   useEffect(() => {
 
-   var toggler = document.getElementsByClassName("nav-toggle");
-   var i;
+   var toggler:any = document.getElementsByClassName("nav-toggle");
 
-   for (i = 0; i < toggler.length; i++) {
-      toggler[i].addEventListener("click", function(this: any) {
-         this.parentElement.querySelector(".submenu").classList.toggle("active");
-         this.classList.toggle("caret-down");
-      });
+   for (var i = 0; i < toggler.length; i++) {
+
+      if(!toggler[i].hasEvent){
+         toggler[i].hasEvent = true;
+         toggler[i].addEventListener("click", function(this: any) {
+            this.parentElement.querySelector(".submenu").classList.toggle("active");
+            this.classList.toggle("caret-down");
+         });
+      }
    }
    
   }, [menuTree])

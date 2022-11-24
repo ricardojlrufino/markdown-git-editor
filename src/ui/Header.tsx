@@ -1,10 +1,9 @@
 import React from 'preact'
+import { useEffect } from 'preact/hooks';
 
 const SiteConfig =  window.DocSiteConfig;
 
 export default function Header() {
-
-
 
   return (
     <header class="header">
@@ -14,7 +13,7 @@ export default function Header() {
       <nav class="nav">
          
          <ul class="nav__list">
-            <a href="/" class="nav__item" aria-current="page"> Home </a>
+            <a href={SiteConfig["docs"]["homePage"]} class="nav__item" aria-current="page"> Home </a>
          </ul>
       </nav>
    </header>

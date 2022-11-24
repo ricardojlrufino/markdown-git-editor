@@ -770,6 +770,11 @@ normalize@^0.3.1:
   dependencies:
     stylus "*"
 
+oauth4webapi@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-2.0.1.tgz#4ac1b2a041ccbd92c33a6021c41ed71ab9eb4847"
+  integrity sha512-uqTbj4q5E6OhKAdE6iqrnRJq0owxIloLd2RIfvG9Wu1mplUxNWErxdgQNEgAAn88wMoW4wLPQ74aJE/n/pR0Tg==
+
 once@^1.3.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
