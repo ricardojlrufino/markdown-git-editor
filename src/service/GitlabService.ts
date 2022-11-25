@@ -187,11 +187,8 @@ export default class GitlabService {
         method: "GET",
         headers,
       }
-    ).then(async (resp:Response) => {
-
-      return resp.body;
-
-
+    ).then(async (body:any) => {
+      return body;
     });
   }
 
