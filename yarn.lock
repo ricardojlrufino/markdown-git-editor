@@ -336,6 +336,11 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
+"@types/refresh-fetch@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@types/refresh-fetch/-/refresh-fetch-0.6.1.tgz#7677f8095bcff0e4c2065319469a187d854b92ea"
+  integrity sha512-i/3Fbbkm1+3SSbZh+AjveKmlFkVLAoF82WzRCX6T6xkr9bPmmWlO38OQu1jSNPfqBGN5zdbG9SPdKDqdV/BcEg==
+
 ansi-styles@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
